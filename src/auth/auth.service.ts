@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { AuthBody } from './auth.controller';
+import { AuthBody, CreateUser } from './auth.controller';
 import { PrismaService } from 'src/prisma.service';
 import { hash, compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@prisma/client';
+import { UserPayload } from './jwt.strategy';
 
 @Injectable()
 export class AuthService {
@@ -31,6 +33,28 @@ export class AuthService {
     }
     return await this.authenticateUser({ userId: existingUser.id.toString() });
   }
+
+  async register({ registerBody }: { registerBody: CreateUser }) {
+    const { email, firstName, password } = registerBody;
+    const hashedPassword = await this.hashPassword({ password });
+
+    const existingUser = await this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+    if (existingUser) {
+      throw new Error('l&apos;utilisateur existe déja');
+    }
+    const CreatedUser = await this.prisma.user.create({
+      data: {
+        email,
+        firstName,
+        password: hashedPassword,
+      },
+    });
+    return await this.authenticateUser({ userId: CreatedUser.id.toString() });
+  }
   //     const hashPassword = await this.hashPassword({ password });
   private async hashPassword({ password }: { password: string }) {
     const hashedPassword = await hash(password, 10);
@@ -47,8 +71,8 @@ export class AuthService {
     const isPasswordValid = await compare(password, hashedPassword);
     return isPasswordValid;
   }
-  private async authenticateUser({ userId }: { userId: string }) {
-    const payload = { sub: userId };
-    return { access_token: await this.jwtService.signAsync(payload) };
+  private authenticateUser({ userId }: UserPayload) {
+    const payload: UserPayload = { userId };
+    return { access_token: this.jwtService.sign(payload) };
   }
 }
