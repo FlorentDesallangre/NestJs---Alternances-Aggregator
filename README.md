@@ -8,9 +8,10 @@
 ## Description
   <p align="center">Ce projet a pour objectif de développer une application web utilisant NestJS pour le backend. L'application permettra de centraliser les offres d'alternance en un seul endroit, tout en excluant celles publiées par des établissements comme l'ISCOD. La réalisation de ce projet m'aidera à mieux comprendre les bonnes pratiques de développement (clean architecture, tests...), en mettant l'accent sur l'utilisation d'une architecture robuste reposant sur un système de modules. Cela favorisera une meilleure séparation des préoccupations, rendra mon code plus maintenable et scalable, et facilitera la mise en place de tests.</p>
 
-## back-end powered by
+## Dernières étapes validées
+<p align="center">Création d'une table user en bdd <br /> création compte utilisatueur possible et récupération d'un token jwt lors du login <br /> Mise en place de l'authentification au près de l'Api France Travail </p>
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+
 
 ## Project setup
 
